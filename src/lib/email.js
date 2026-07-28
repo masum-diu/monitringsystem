@@ -1,3 +1,5 @@
+import { getResend } from '@/lib/resendClient';
+
 function formatResults(results) {
   return results
     .map((r) => {
@@ -10,16 +12,20 @@ function formatResults(results) {
     .join('\n\n');
 }
 
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
 /** @param {{ allOk: boolean, results: { name: string, url: string, ok: boolean, status: number|null, ms: number, error: string|null }[], slotLabel: string }} opts */
 export async function sendMonitorEmail({ allOk, results, slotLabel }) {
   const to = process.env.MONITOR_EMAIL_TO;
   const from = process.env.MONITOR_EMAIL_FROM;
-  const apiKey = process.env.RESEND_API_KEY;
 
-  if (!to || !from || !apiKey) {
-    throw new Error(
-      'Missing RESEND_API_KEY, MONITOR_EMAIL_FROM, or MONITOR_EMAIL_TO environment variables'
-    );
+  if (!to || !from) {
+    throw new Error('Missing MONITOR_EMAIL_FROM or MONITOR_EMAIL_TO environment variables');
   }
 
   const subject = allOk
@@ -31,25 +37,19 @@ export async function sendMonitorEmail({ allOk, results, slotLabel }) {
     : `One or more sites failed the health check.\n\nCheck time: ${slotLabel}\n\n`;
 
   const text = `${intro}${formatResults(results)}`;
+  const resend = getResend();
 
-  const res = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      from,
-      to: to.split(',').map((e) => e.trim()),
-      subject,
-      text,
-    }),
+  const { data, error } = await resend.emails.send({
+    from,
+    to: to.split(',').map((e) => e.trim()),
+    subject,
+    text,
+    html: `<pre style="font-family:system-ui,sans-serif;white-space:pre-wrap">${escapeHtml(text)}</pre>`,
   });
 
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Resend API error ${res.status}: ${body}`);
+  if (error) {
+    throw new Error(error.message || JSON.stringify(error));
   }
 
-  return res.json();
+  return data;
 }
