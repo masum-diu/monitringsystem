@@ -1,40 +1,41 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Site Monitor (Vercel)
 
-## Getting Started
+Automatic uptime checks + email alerts. Best fit for **many sites, fixed times, no AI agent**.
 
-First, run the development server:
+## Schedule
+
+Default: **10:00** and **18:00** in `MONITOR_TIMEZONE` (default `Asia/Dhaka`).
+
+Vercel runs one cron every hour (`0 * * * *` UTC); the API only checks and sends mail at those local hours. Manual test anytime: `?force=1`.
+
+## Quick setup
+
+1. Edit **`monitor-sites.json`** — your real site names and URLs.
+2. [Resend](https://resend.com): API key + verified sender domain.
+3. Vercel env vars (see `.env.example`):
+   - `CRON_SECRET`, `RESEND_API_KEY`, `MONITOR_EMAIL_FROM`, `MONITOR_EMAIL_TO`
+4. Deploy this repo to Vercel (not the `my-agent` Eve folder).
+
+## Test after deploy
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+curl -H "Authorization: Bearer YOUR_CRON_SECRET" \
+  "https://YOUR_APP.vercel.app/api/cron/monitor?force=1"
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Email
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+| Result | Subject |
+|--------|---------|
+| All OK | `[OK] Site monitor — all sites healthy` |
+| Any down | `[ALERT] Site monitor — N site(s) down` |
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+## Optional env
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+- `MONITOR_SITES` — JSON array (overrides `monitor-sites.json`)
+- `MONITOR_HOURS` — e.g. `10,18`
+- `MONITOR_TIMEZONE` — e.g. `America/New_York` for US sites
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Eve (`my-agent`)
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Separate experiment; needs **Node 24** and is not required for scheduled monitoring. Use this Next.js app for production alerts.
