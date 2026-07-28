@@ -6,7 +6,25 @@ Automatic uptime checks + email alerts. Best fit for **many sites, fixed times, 
 
 Default: **10:00** and **18:00** in `MONITOR_TIMEZONE` (default `Asia/Dhaka`).
 
-Vercel runs one cron every hour (`0 * * * *` UTC); the API only checks and sends mail at those local hours. Manual test anytime: `?force=1`.
+Manual test anytime: `?force=1`.
+
+### Vercel Hobby vs Pro
+
+| Plan | Scheduling |
+|------|------------|
+| **Hobby** | Vercel Cron is limited (often **once per day**). This repo uses **`vercel.json` with empty `crons`** and **GitHub Actions** for twice-daily checks (free). |
+| **Pro** | You can add Vercel crons instead, e.g. `0 4 * * *` and `0 12 * * *` UTC for 10:00 / 18:00 Dhaka. |
+
+### GitHub Actions (Hobby — recommended)
+
+1. Push repo to **GitHub** and connect Vercel to it.
+2. GitHub repo → **Settings → Secrets and variables → Actions**:
+   - `MONITOR_URL` = `https://YOUR-PROJECT.vercel.app` (no trailing slash)
+   - `CRON_SECRET` = same as Vercel env
+3. Workflow file: `.github/workflows/site-monitor.yml` (runs 04:00 & 12:00 UTC daily).
+4. **Actions** tab → **Site monitor** → **Run workflow** to test once.
+
+Vercel env vars still required (`RESEND_*`, `MONITOR_EMAIL_*`, `CRON_SECRET`).
 
 ## Quick setup
 

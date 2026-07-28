@@ -1,0 +1,28 @@
+# Hobby-friendly scheduling: Vercel Cron on Hobby is very limited (often once/day).
+# Use GitHub Actions (free) for 10:00 and 18:00 Asia/Dhaka checks instead.
+#
+# Repo secrets (Settings → Secrets and variables → Actions):
+#   MONITOR_URL  — https://YOUR-PROJECT.vercel.app
+#   CRON_SECRET  — same value as Vercel env CRON_SECRET
+
+name: Site monitor
+
+on:
+  schedule:
+    # 10:00 Asia/Dhaka (UTC+6) = 04:00 UTC
+    - cron: '0 4 * * *'
+    # 18:00 Asia/Dhaka = 12:00 UTC
+    - cron: '0 12 * * *'
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run monitor and send email
+        run: |
+          curl -fsS -H "Authorization: Bearer ${CRON_SECRET}" \
+            "${MONITOR_URL}/api/cron/monitor?force=1"
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          MONITOR_URL: ${{ secrets.MONITOR_URL }}
