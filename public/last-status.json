@@ -1,0 +1,9 @@
+{
+  "ok": null,
+  "allOk": null,
+  "checkedAt": null,
+  "checkedAtLabel": null,
+  "timezone": "Asia/Dhaka",
+  "message": "Scheduled checks at 10:00 and 18:00 (Asia/Dhaka). Status updates after each GitHub Actions run.",
+  "results": []
+}

@@ -54,6 +54,7 @@ export default async function handler(req, res) {
     const sites = getMonitorSites();
     const { results, allOk, failed } = await checkAllSites(sites);
     const label = slotLabel();
+    const tz = process.env.MONITOR_TIMEZONE || 'Asia/Dhaka';
 
     await sendMonitorEmail({
       allOk,
@@ -65,7 +66,11 @@ export default async function handler(req, res) {
       ok: true,
       allOk,
       checked: sites.length,
+      checkedAt: new Date().toISOString(),
+      checkedAtLabel: label,
+      timezone: tz,
       failed: failed.map(({ name, url, error, status }) => ({ name, url, error, status })),
+      results,
       emailed: true,
     });
   } catch (err) {

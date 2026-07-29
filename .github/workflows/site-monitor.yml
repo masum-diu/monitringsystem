@@ -1,9 +1,5 @@
 # Schedule: 10:00 & 18:00 Asia/Dhaka (04:00 & 12:00 UTC)
-#
-# ONE secret: CRON_SECRET (same value as Vercel)
-# Either:
-#   A) Repository secrets → CRON_SECRET  (no environment: line needed), OR
-#   B) Environment "Configure CRON_SECRET" → secret CRON_SECRET (configured below)
+# Updates public/last-status.json on each run so the website shows last check time + results.
 
 name: Site monitor
 
@@ -19,31 +15,44 @@ env:
 jobs:
   check:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     environment: Configure CRON_SECRET
     steps:
+      - uses: actions/checkout@v4
+
       - name: Validate CRON_SECRET
         env:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
           set -euo pipefail
           if [ -z "${CRON_SECRET:-}" ]; then
-            echo "::error::Missing CRON_SECRET. Add it under Environment 'Configure CRON_SECRET' OR Repository secrets. Value must match Vercel CRON_SECRET."
+            echo "::error::Missing CRON_SECRET (Environment Configure CRON_SECRET or Repository secret)."
             exit 1
           fi
 
-      - name: Run monitor and send email
+      - name: Run monitor, email, save status JSON
         env:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
           set -euo pipefail
           BASE="${MONITOR_URL%/}"
           echo "GET ${BASE}/api/cron/monitor?force=1"
-          HTTP=$(curl -sS -w "%{http_code}" -o /tmp/monitor-body.json \
+          HTTP=$(curl -sS -w "%{http_code}" -o public/last-status.json \
             -H "Authorization: Bearer ${CRON_SECRET}" \
             "${BASE}/api/cron/monitor?force=1")
-          cat /tmp/monitor-body.json
+          cat public/last-status.json
           echo ""
           if [ "$HTTP" != "200" ]; then
-            echo "::error::Monitor HTTP ${HTTP} — see JSON above (often Resend: verify domain for multiple recipients, or set MONITOR_EMAIL_FROM=onboarding@resend.dev on Vercel)"
+            echo "::error::Monitor HTTP ${HTTP}"
             exit 1
           fi
+
+      - name: Publish status to website (git push)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/last-status.json
+          git diff --staged --quiet && echo "No status change" && exit 0
+          git commit -m "chore: update site monitor status"
+          git push
