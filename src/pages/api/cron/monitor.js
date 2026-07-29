@@ -41,6 +41,16 @@ export default async function handler(req, res) {
   }
 
   try {
+    const missing = ['RESEND_API_KEY', 'MONITOR_EMAIL_FROM', 'MONITOR_EMAIL_TO'].filter(
+      (k) => !process.env[k]?.trim()
+    );
+    if (missing.length) {
+      return res.status(500).json({
+        ok: false,
+        error: `Missing Vercel env: ${missing.join(', ')}`,
+      });
+    }
+
     const sites = getMonitorSites();
     const { results, allOk, failed } = await checkAllSites(sites);
     const label = slotLabel();
