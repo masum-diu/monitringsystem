@@ -3,8 +3,11 @@ import { getResend } from '@/lib/resendClient';
 function formatResults(results) {
   return results
     .map((r) => {
-      if (r.ok) {
+      if (r.ok && !r.error) {
         return `✓ ${r.name}\n  ${r.url}\n  Status: ${r.status} (${r.ms}ms)`;
+      }
+      if (r.ok && r.error) {
+        return `✓ ${r.name} (protected)\n  ${r.url}\n  Status: ${r.status} (${r.ms}ms)\n  Note: ${r.error}`;
       }
       const statusPart = r.status != null ? `Status: ${r.status}` : 'No response';
       return `✗ ${r.name}\n  ${r.url}\n  ${statusPart} — ${r.error} (${r.ms}ms)`;

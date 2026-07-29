@@ -132,14 +132,23 @@ export default function Home({ lastStatus }) {
 
             {hasCheck ? (
               <ul className={styles.siteGrid}>
-                {results.map((r) => (
-                  <li
-                    key={r.url}
-                    className={`${styles.siteCard} ${r.ok ? styles.siteCardOk : styles.siteCardBad}`}
-                  >
+                {results.map((r) => {
+                  const warn = r.protected || (r.ok && r.error);
+                  const cardClass = !r.ok
+                    ? styles.siteCardBad
+                    : warn
+                      ? styles.siteCardWarn
+                      : styles.siteCardOk;
+                  const tagClass = !r.ok
+                    ? styles.tagBad
+                    : warn
+                      ? styles.tagWarn
+                      : styles.tagOk;
+                  return (
+                  <li key={r.url} className={`${styles.siteCard} ${cardClass}`}>
                     <div className={styles.siteHead}>
                       <span className={styles.siteName}>{r.name}</span>
-                      <span className={`${styles.statusTag} ${r.ok ? styles.tagOk : styles.tagBad}`}>
+                      <span className={`${styles.statusTag} ${tagClass}`}>
                         {r.status ?? 'ERR'}
                       </span>
                     </div>
@@ -150,16 +159,17 @@ export default function Home({ lastStatus }) {
                     </span>
                     <div className={styles.latencyTrack}>
                       <div
-                        className={`${styles.latencyFill} ${r.ok ? '' : styles.latencyFillBad}`}
+                        className={`${styles.latencyFill} ${!r.ok ? styles.latencyFillBad : warn ? styles.latencyFillWarn : ''}`}
                         style={{ width: `${Math.min(100, (r.ms / maxMs) * 100)}%` }}
                       />
                     </div>
                     <p className={styles.latencyMeta}>
                       {r.ms}ms
-                      {!r.ok && r.error ? ` · ${r.error}` : ''}
+                      {r.error ? ` · ${r.error}` : ''}
                     </p>
                   </li>
-                ))}
+                  );
+                })}
               </ul>
             ) : (
               <div className={styles.empty}>

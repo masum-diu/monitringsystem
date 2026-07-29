@@ -361,6 +361,15 @@
   color: var(--bad);
 }
 
+.tagWarn {
+  background: var(--accent-dim);
+  color: var(--accent-dark);
+}
+
+.siteCardWarn {
+  border-left: 3px solid var(--accent);
+}
+
 .siteLink {
   font-size: 0.72rem;
   color: var(--muted);
@@ -394,6 +403,10 @@
 
 .latencyFillBad {
   background: linear-gradient(90deg, var(--bad), var(--accent));
+}
+
+.latencyFillWarn {
+  background: linear-gradient(90deg, var(--accent), #1a1a1a);
 }
 
 .latencyMeta {
