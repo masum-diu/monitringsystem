@@ -2,7 +2,7 @@ import { getResend } from '@/lib/resendClient';
 
 /**
  * Send Resend's "Hello World" test email (testing: onboarding@resend.dev → your Gmail).
- * Set RESEND_API_KEY in .env.local — replace re_xxxxxxxxx with your real key from Resend.
+ * Env: RESEND_API_KEY on Vercel (or export for local test).
  */
 export async function sendHelloWorldEmail() {
   const resend = getResend();

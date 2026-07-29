@@ -1,20 +1,9 @@
 import { readFileSync } from 'fs';
+import { loadOptionalEnvFiles } from './loadEnv.mjs';
 import { Resend } from 'resend';
 import { checkAllSites } from '../src/lib/checkSites.js';
 
-const envPath = new URL('../.env.local', import.meta.url);
-for (const line of readFileSync(envPath, 'utf8').split('\n')) {
-  const trimmed = line.trim();
-  if (!trimmed || trimmed.startsWith('#')) continue;
-  const i = trimmed.indexOf('=');
-  if (i === -1) continue;
-  const key = trimmed.slice(0, i).trim();
-  let val = trimmed.slice(i + 1).trim();
-  if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
-    val = val.slice(1, -1);
-  }
-  process.env[key] = val;
-}
+loadOptionalEnvFiles();
 
 function formatResults(results) {
   return results
@@ -33,11 +22,15 @@ const to = process.env.MONITOR_EMAIL_TO;
 const from = process.env.MONITOR_EMAIL_FROM;
 
 if (!apiKey || apiKey === 're_xxxxxxxxx' || !to || !from) {
-  console.error('Set RESEND_API_KEY, MONITOR_EMAIL_FROM, MONITOR_EMAIL_TO in .env.local');
+  console.error(
+    'Set RESEND_API_KEY, MONITOR_EMAIL_FROM, MONITOR_EMAIL_TO (Vercel env or export in shell).'
+  );
   process.exit(1);
 }
 
-const sites = JSON.parse(readFileSync(new URL('../monitor-sites.json', import.meta.url), 'utf8'));
+const sites = JSON.parse(
+  readFileSync(new URL('../monitor-sites.json', import.meta.url), 'utf8')
+);
 const tz = process.env.MONITOR_TIMEZONE || 'Asia/Dhaka';
 const label = new Date().toLocaleString('en-US', {
   timeZone: tz,
