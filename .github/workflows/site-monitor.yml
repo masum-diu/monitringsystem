@@ -1,8 +1,9 @@
 # Schedule: 10:00 & 18:00 Asia/Dhaka (04:00 & 12:00 UTC)
 #
-# ONE secret required:
-#   Settings → Secrets and variables → Actions → Repository secrets → CRON_SECRET
-#   (same value as Vercel env CRON_SECRET — NOT under Environments)
+# ONE secret: CRON_SECRET (same value as Vercel)
+# Either:
+#   A) Repository secrets → CRON_SECRET  (no environment: line needed), OR
+#   B) Environment "Configure CRON_SECRET" → secret CRON_SECRET (configured below)
 
 name: Site monitor
 
@@ -18,6 +19,7 @@ env:
 jobs:
   check:
     runs-on: ubuntu-latest
+    environment: Configure CRON_SECRET
     steps:
       - name: Validate CRON_SECRET
         env:
@@ -25,7 +27,7 @@ jobs:
         run: |
           set -euo pipefail
           if [ -z "${CRON_SECRET:-}" ]; then
-            echo "::error::Missing Repository secret CRON_SECRET. Go to Settings → Secrets and variables → Actions → Repository secrets (top tab, not Environments). Value must match Vercel CRON_SECRET."
+            echo "::error::Missing CRON_SECRET. Add it under Environment 'Configure CRON_SECRET' OR Repository secrets. Value must match Vercel CRON_SECRET."
             exit 1
           fi
 
