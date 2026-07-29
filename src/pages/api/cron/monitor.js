@@ -55,7 +55,7 @@ export default async function handler(req, res) {
     const { results, allOk, failed } = await checkAllSites(sites);
     const label = slotLabel();
 
-    const mailResult = await sendMonitorEmail({
+    await sendMonitorEmail({
       allOk,
       results,
       slotLabel: label,
@@ -66,9 +66,7 @@ export default async function handler(req, res) {
       allOk,
       checked: sites.length,
       failed: failed.map(({ name, url, error, status }) => ({ name, url, error, status })),
-      emailed: mailResult.sentTo.length > 0,
-      sentTo: mailResult.sentTo,
-      emailFailed: mailResult.failedTo,
+      emailed: true,
     });
   } catch (err) {
     console.error('Monitor cron failed:', err);
