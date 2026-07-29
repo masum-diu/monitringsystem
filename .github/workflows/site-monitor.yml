@@ -1,28 +1,41 @@
-# Hobby-friendly scheduling: Vercel Cron on Hobby is very limited (often once/day).
-# Use GitHub Actions (free) for 10:00 and 18:00 Asia/Dhaka checks instead.
+# Vercel Hobby: schedule via GitHub Actions (10:00 & 18:00 Asia/Dhaka).
 #
-# Repo secrets (Settings → Secrets and variables → Actions):
-#   MONITOR_URL  — https://YOUR-PROJECT.vercel.app
-#   CRON_SECRET  — same value as Vercel env CRON_SECRET
+# Settings → Secrets and variables → Actions → Repository secrets (NOT Environments):
+#   MONITOR_URL  = https://monitringsystem-inks.vercel.app
+#   CRON_SECRET  = same value as Vercel env CRON_SECRET
 
 name: Site monitor
 
 on:
   schedule:
-    # 10:00 Asia/Dhaka (UTC+6) = 04:00 UTC
     - cron: '0 4 * * *'
-    # 18:00 Asia/Dhaka = 12:00 UTC
     - cron: '0 12 * * *'
   workflow_dispatch:
 
 jobs:
   check:
     runs-on: ubuntu-latest
+    env:
+      CRON_SECRET: ${{ secrets.CRON_SECRET }}
+      MONITOR_URL: ${{ secrets.MONITOR_URL }}
     steps:
+      - name: Validate required secrets
+        run: |
+          set -euo pipefail
+          if [ -z "${MONITOR_URL:-}" ] || [ -z "${CRON_SECRET:-}" ]; then
+            echo "Error: set Repository secrets MONITOR_URL and CRON_SECRET (Settings → Secrets and variables → Actions → Repository secrets)." >&2
+            exit 1
+          fi
+
       - name: Run monitor and send email
         run: |
+          set -euo pipefail
+          BASE="${MONITOR_URL%/}"
+          case "$BASE" in
+            http://*|https://*) ;;
+            *) BASE="https://${BASE}" ;;
+          esac
+          HOST="$(echo "$BASE" | awk -F/ '{print $3}')"
+          echo "Calling monitor endpoint on host: ${HOST}"
           curl -fsS -H "Authorization: Bearer ${CRON_SECRET}" \
-            "${MONITOR_URL}/api/cron/monitor?force=1"
-        env:
-          CRON_SECRET: ${{ secrets.CRON_SECRET }}
-          MONITOR_URL: ${{ secrets.MONITOR_URL }}
+            "${BASE}/api/cron/monitor?force=1"
