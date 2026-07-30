@@ -1,5 +1,6 @@
 import { checkAllSites } from '@/lib/checkSites';
 import { sendMonitorEmail } from '@/lib/email';
+import { isWhatsAppAlertOnly, isWhatsAppConfigured, sendMonitorWhatsApp } from '@/lib/whatsapp';
 import { isMonitorWindow } from '@/lib/schedule';
 import { getMonitorSites } from '@/lib/sites';
 
@@ -62,6 +63,25 @@ export default async function handler(req, res) {
       slotLabel: label,
     });
 
+    let whatsapp = {
+      configured: isWhatsAppConfigured(),
+      alertOnly: isWhatsAppAlertOnly(),
+      sent: false,
+    };
+    if (whatsapp.configured) {
+      try {
+        const wa = await sendMonitorWhatsApp({
+          allOk,
+          results,
+          slotLabel: label,
+        });
+        whatsapp = { ...whatsapp, ...wa, sent: !wa.skipped };
+      } catch (waErr) {
+        console.error('WhatsApp notify failed:', waErr);
+        whatsapp = { ...whatsapp, sent: false, error: waErr.message || 'WhatsApp failed' };
+      }
+    }
+
     return res.status(200).json({
       ok: true,
       allOk,
@@ -72,6 +92,7 @@ export default async function handler(req, res) {
       failed: failed.map(({ name, url, error, status }) => ({ name, url, error, status })),
       results,
       emailed: true,
+      whatsapp,
     });
   } catch (err) {
     console.error('Monitor cron failed:', err);

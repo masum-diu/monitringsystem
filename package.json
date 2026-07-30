@@ -7,8 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "check:local": "node scripts/check-local.mjs",
+    "monitor:local": "node scripts/monitor-local.mjs",
     "email:hello": "node scripts/resend-hello.mjs",
-    "email:demo": "node scripts/send-demo.mjs"
+    "email:demo": "node scripts/send-demo.mjs",
+    "whatsapp:test": "node scripts/whatsapp-test.mjs",
+    "whatsapp:chats": "node scripts/greenapi-list-chats.mjs"
   },
   "dependencies": {
     "next": "13.5.11",

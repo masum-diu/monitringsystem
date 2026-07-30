@@ -1,19 +1,5 @@
+import { buildMonitorMessage } from '@/lib/formatMonitorMessage';
 import { getResend } from '@/lib/resendClient';
-
-function formatResults(results) {
-  return results
-    .map((r) => {
-      if (r.ok && !r.error) {
-        return `✓ ${r.name}\n  ${r.url}\n  Status: ${r.status} (${r.ms}ms)`;
-      }
-      if (r.ok && r.error) {
-        return `✓ ${r.name} (protected)\n  ${r.url}\n  Status: ${r.status} (${r.ms}ms)\n  Note: ${r.error}`;
-      }
-      const statusPart = r.status != null ? `Status: ${r.status}` : 'No response';
-      return `✗ ${r.name}\n  ${r.url}\n  ${statusPart} — ${r.error} (${r.ms}ms)`;
-    })
-    .join('\n\n');
-}
 
 function escapeHtml(str) {
   return str
@@ -35,11 +21,7 @@ export async function sendMonitorEmail({ allOk, results, slotLabel }) {
     ? `[OK] Site monitor — all sites healthy (${slotLabel})`
     : `[ALERT] Site monitor — ${results.filter((r) => !r.ok).length} site(s) down (${slotLabel})`;
 
-  const intro = allOk
-    ? `All monitored sites responded successfully.\n\nCheck time: ${slotLabel}\n\n`
-    : `One or more sites failed the health check.\n\nCheck time: ${slotLabel}\n\n`;
-
-  const text = `${intro}${formatResults(results)}`;
+  const text = buildMonitorMessage({ allOk, results, slotLabel });
   const resend = getResend();
 
   const { data, error } = await resend.emails.send({
