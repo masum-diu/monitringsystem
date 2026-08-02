@@ -1,4 +1,4 @@
-import { buildWhatsAppMessage } from '@/lib/formatMonitorMessage';
+import { buildMonitorMessage } from '@/lib/formatMonitorMessage';
 import { sendGreenApiMessage } from '@/lib/greenApi';
 
 function provider() {
@@ -84,7 +84,7 @@ export async function sendMonitorWhatsApp({ allOk, results, slotLabel }) {
     return { skipped: true, reason: 'WHATSAPP_ALERT_ONLY — all sites OK' };
   }
 
-  const text = buildWhatsAppMessage({ allOk, results, slotLabel });
+  const text = buildMonitorMessage({ allOk, results, slotLabel });
   if (kind === 'greenapi') {
     return sendViaGreenApi(text);
   }

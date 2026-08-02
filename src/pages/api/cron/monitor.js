@@ -1,5 +1,5 @@
 import { checkAllSites } from '@/lib/checkSites';
-import { sendMonitorEmail } from '@/lib/email';
+// import { sendMonitorEmail } from '@/lib/email'; // disabled — WhatsApp only
 import { isWhatsAppAlertOnly, isWhatsAppConfigured, sendMonitorWhatsApp } from '@/lib/whatsapp';
 import { isMonitorWindow } from '@/lib/schedule';
 import { getMonitorSites } from '@/lib/sites';
@@ -42,13 +42,11 @@ export default async function handler(req, res) {
   }
 
   try {
-    const missing = ['RESEND_API_KEY', 'MONITOR_EMAIL_FROM', 'MONITOR_EMAIL_TO'].filter(
-      (k) => !process.env[k]?.trim()
-    );
-    if (missing.length) {
+    if (!isWhatsAppConfigured()) {
       return res.status(500).json({
         ok: false,
-        error: `Missing Vercel env: ${missing.join(', ')}`,
+        error:
+          'WhatsApp not configured — set GREEN_API_* + WHATSAPP_GROUP_NAME (or CALLMEBOT_*) on Vercel',
       });
     }
 
@@ -57,29 +55,27 @@ export default async function handler(req, res) {
     const label = slotLabel();
     const tz = process.env.MONITOR_TIMEZONE || 'Asia/Dhaka';
 
-    await sendMonitorEmail({
-      allOk,
-      results,
-      slotLabel: label,
-    });
+    // Email disabled — WhatsApp only
+    // await sendMonitorEmail({ allOk, results, slotLabel: label });
 
     let whatsapp = {
-      configured: isWhatsAppConfigured(),
+      configured: true,
       alertOnly: isWhatsAppAlertOnly(),
       sent: false,
     };
-    if (whatsapp.configured) {
-      try {
-        const wa = await sendMonitorWhatsApp({
-          allOk,
-          results,
-          slotLabel: label,
-        });
-        whatsapp = { ...whatsapp, ...wa, sent: !wa.skipped };
-      } catch (waErr) {
-        console.error('WhatsApp notify failed:', waErr);
-        whatsapp = { ...whatsapp, sent: false, error: waErr.message || 'WhatsApp failed' };
-      }
+    try {
+      const wa = await sendMonitorWhatsApp({
+        allOk,
+        results,
+        slotLabel: label,
+      });
+      whatsapp = { ...whatsapp, ...wa, sent: !wa.skipped };
+    } catch (waErr) {
+      console.error('WhatsApp notify failed:', waErr);
+      return res.status(500).json({
+        ok: false,
+        error: waErr.message || 'WhatsApp failed',
+      });
     }
 
     return res.status(200).json({
@@ -91,7 +87,7 @@ export default async function handler(req, res) {
       timezone: tz,
       failed: failed.map(({ name, url, error, status }) => ({ name, url, error, status })),
       results,
-      emailed: true,
+      emailed: false,
       whatsapp,
     });
   } catch (err) {

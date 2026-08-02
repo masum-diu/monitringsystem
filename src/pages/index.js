@@ -42,7 +42,7 @@ export default function Home({ lastStatus }) {
     <>
       <Head>
         <title>Site Monitor · Ether Tech</title>
-        <meta name="description" content="Scheduled uptime checks with email and WhatsApp alerts" />
+        <meta name="description" content="Scheduled uptime checks with WhatsApp alerts" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <div className={styles.page}>
@@ -77,7 +77,7 @@ export default function Home({ lastStatus }) {
                   Site <span className={styles.heroTitleAccent}>Monitor</span>
                 </h1>
                 <p className={styles.heroDesc}>
-                  Checked every 3 hours. Email + WhatsApp to Ether Alumni on every run.
+                  Checked every 3 hours. WhatsApp alerts to EtherTech group.
                 </p>
               </div>
             </div>
@@ -113,12 +113,8 @@ export default function Home({ lastStatus }) {
                       <span className={styles.slotTime}>3h</span>
                     </div>
                     <div className={styles.slot}>
-                      <span>WhatsApp (Ether Alumni)</span>
+                      <span>WhatsApp (EtherTech)</span>
                       <span className={styles.slotTime}>every 3h · OK + alert</span>
-                    </div>
-                    <div className={styles.slot}>
-                      <span>Email</span>
-                      <span className={styles.slotTime}>every check</span>
                     </div>
                   </div>
                 </div>

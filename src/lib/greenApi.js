@@ -52,7 +52,7 @@ export async function resolveGreenApiChatId() {
 
   const groupName = process.env.WHATSAPP_GROUP_NAME?.trim();
   if (!groupName) {
-    throw new Error('Set WHATSAPP_CHAT_ID or WHATSAPP_GROUP_NAME (e.g. Ether Alumni)');
+    throw new Error('Set WHATSAPP_CHAT_ID or WHATSAPP_GROUP_NAME (e.g. EtherTech)');
   }
 
   const chats = await fetchGreenApiChats();

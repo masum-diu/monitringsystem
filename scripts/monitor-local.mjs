@@ -1,14 +1,14 @@
 /**
- * Full local run: check sites + email + WhatsApp (same logic as /api/cron/monitor).
- * 1. Copy .env.example → .env.local and fill values
+ * Full local run: check sites + WhatsApp (email disabled).
+ * 1. Copy .env.example → .env.local and fill Green API values
  * 2. npm run monitor:local
  */
 import { readFileSync } from 'fs';
 import { loadOptionalEnvFiles } from './loadEnv.mjs';
 import { checkAllSites } from '../src/lib/checkSites.js';
-import { buildMonitorMessage, buildWhatsAppMessage } from '../src/lib/formatMonitorMessage.js';
+import { buildMonitorMessage } from '../src/lib/formatMonitorMessage.js';
 import { sendGreenApiMessage } from '../src/lib/greenApi.js';
-import { Resend } from 'resend';
+// import { Resend } from 'resend'; // email disabled
 
 loadOptionalEnvFiles();
 
@@ -42,25 +42,11 @@ for (const r of results) {
 }
 console.log(allOk ? '\nAll OK' : '\nSome failures');
 
-const emailText = buildMonitorMessage({ allOk, results, slotLabel });
-const whatsappText = buildWhatsAppMessage({ allOk, results, slotLabel });
+const messageText = buildMonitorMessage({ allOk, results, slotLabel });
 
-const apiKey = process.env.RESEND_API_KEY;
-const to = process.env.MONITOR_EMAIL_TO;
-const from = process.env.MONITOR_EMAIL_FROM;
-
-if (apiKey && to && from) {
-  console.log('\nSending email...');
-  const subject = allOk
-    ? `[OK] Site monitor — all sites healthy (${slotLabel})`
-    : `[ALERT] Site monitor — ${results.filter((r) => !r.ok).length} site(s) down (${slotLabel})`;
-  const resend = new Resend(apiKey);
-  const { data, error } = await resend.emails.send({ from, to: to.split(',').map((e) => e.trim()), subject, text: emailText });
-  if (error) console.error('Email failed:', error);
-  else console.log('Email sent:', data?.id);
-} else {
-  console.log('\nEmail skipped (set RESEND_API_KEY, MONITOR_EMAIL_FROM, MONITOR_EMAIL_TO in .env.local)');
-}
+// Email disabled — WhatsApp only
+// const apiKey = process.env.RESEND_API_KEY;
+// ...
 
 if (whatsappConfigured()) {
   if (whatsappAlertOnly() && allOk) {
@@ -68,7 +54,7 @@ if (whatsappConfigured()) {
   } else {
     console.log('\nSending WhatsApp...');
     try {
-      const out = await sendGreenApiMessage(whatsappText);
+      const out = await sendGreenApiMessage(messageText);
       console.log('WhatsApp sent:', out);
     } catch (err) {
       console.error('WhatsApp failed:', err.message);

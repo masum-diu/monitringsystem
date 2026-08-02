@@ -1,5 +1,5 @@
 /**
- * List Green API WhatsApp groups — find chat ID for Ether Alumni etc.
+ * List Green API WhatsApp groups — find chat ID for EtherTech etc.
  * Set GREEN_API_* in .env.local or export, then: npm run whatsapp:chats
  */
 import { loadOptionalEnvFiles } from './loadEnv.mjs';
@@ -33,7 +33,7 @@ try {
       console.log(`No match for "${filter}".`);
     }
   } else {
-    console.log('Tip: npm run whatsapp:chats -- "Ether Alumni"');
+    console.log('Tip: npm run whatsapp:chats -- "EtherTech"');
   }
 } catch (err) {
   console.error(err.message);

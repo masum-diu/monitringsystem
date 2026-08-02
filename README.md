@@ -1,6 +1,6 @@
 # Site Monitor (Vercel)
 
-Automatic uptime checks + email alerts + optional WhatsApp (group or personal).
+Automatic uptime checks + **WhatsApp alerts only** (email disabled).
 
 **No `.env.local` required for deploy.** All secrets live in **Vercel Environment Variables** + **GitHub Repository secret** `CRON_SECRET`.
 
@@ -10,9 +10,8 @@ Production URL: https://monitringsystem-inks.vercel.app
 
 1. **`monitor-sites.json`** — site list (committed in repo).
 2. **Vercel** → Settings → Environment Variables (Production) — copy from `.env.example`:
-   - `CRON_SECRET`, `RESEND_API_KEY`, `MONITOR_EMAIL_FROM`, `MONITOR_EMAIL_TO`
-   - optional WhatsApp: `GREEN_API_*` + `WHATSAPP_CHAT_ID` (see below)
-   - optional: `MONITOR_TIMEZONE`, `MONITOR_HOURS`
+   - `CRON_SECRET`, `GREEN_API_*`, `WHATSAPP_GROUP_NAME` (EtherTech)
+   - optional: `MONITOR_TIMEZONE`, `WHATSAPP_ALERT_ONLY`
 3. **Redeploy** after env changes.
 4. **GitHub** → Settings → Secrets → Actions → **Repository secrets**:
    - `CRON_SECRET` (same value as Vercel)
@@ -40,8 +39,8 @@ curl -fsS -H "Authorization: Bearer YOUR_CRON_SECRET" \
 npm run check:local      # sites only (no email/WhatsApp)
 npm run monitor:local    # full: check + email + WhatsApp
 npm run email:demo       # check + email only
-npm run whatsapp:test    # fake alert → Ether Alumni group
-npm run whatsapp:chats -- "Ether Alumni"
+npm run whatsapp:test    # fake alert → EtherTech group
+npm run whatsapp:chats -- "EtherTech"
 
 npm run dev              # API test:
 curl -H "Authorization: Bearer YOUR_CRON_SECRET" "http://localhost:3000/api/cron/monitor?force=1"
@@ -53,8 +52,8 @@ curl -H "Authorization: Bearer YOUR_CRON_SECRET" "http://localhost:3000/api/cron
 2. **Link phone:** Console → QR code scan (একটা spare WhatsApp number ব্যবহার করুন — bot হিসেবে group-এ add হবে).
 3. **Group:** WhatsApp group-এ সেই bot number add করুন (Admin → Add participants).
 4. **Group chat ID** (either way works):
-   - **Easy:** `WHATSAPP_GROUP_NAME=Ether Alumni` — app finds the group automatically, **or**
-   - **Fixed ID:** `npm run whatsapp:chats -- "Ether Alumni"` → copy `WHATSAPP_CHAT_ID`
+   - **Easy:** `WHATSAPP_GROUP_NAME=EtherTech` — app finds the group automatically, **or**
+   - **Fixed ID:** `npm run whatsapp:chats -- "EtherTech"` → copy `WHATSAPP_CHAT_ID`
 5. **Vercel env** (Production):
 
    | Variable | Example |
@@ -63,11 +62,11 @@ curl -H "Authorization: Bearer YOUR_CRON_SECRET" "http://localhost:3000/api/cron
    | `GREEN_API_URL` | `https://7105.api.greenapi.com` (console থেকে copy) |
    | `GREEN_API_INSTANCE_ID` | `7105123456` |
    | `GREEN_API_TOKEN` | `abc123…` |
-   | `WHATSAPP_GROUP_NAME` | `Ether Alumni` |
+   | `WHATSAPP_GROUP_NAME` | `EtherTech` |
    | `WHATSAPP_ALERT_ONLY` | `false` — **default:** প্রতি ৩ ঘণ্টায় WhatsApp (OK + alert) |
 
 **Default (`WHATSAPP_ALERT_ONLY` unset or `false`):**
-- প্রতি ৩ ঘণ্টায় site check + **WhatsApp message** Ether Alumni group-এ
+- প্রতি ৩ ঘণ্টায় site check + **WhatsApp message** EtherTech group-এ
 - সব OK হলে `[OK]` message, down হলে `[ALERT]` message
 
 **শুধু down হলে WhatsApp চাইলে:** Vercel-এ `WHATSAPP_ALERT_ONLY=true`
