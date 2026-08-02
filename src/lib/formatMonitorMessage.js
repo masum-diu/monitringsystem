@@ -14,6 +14,14 @@ export function formatMonitorResults(results) {
     .join('\n\n');
 }
 
+function dashboardUrl() {
+  return (
+    process.env.MONITOR_PUBLIC_URL?.trim() ||
+    process.env.MONITOR_URL?.trim() ||
+    'https://monitringsystem-inks.vercel.app'
+  ).replace(/\/$/, '');
+}
+
 /** @param {{ allOk: boolean, results: Parameters<typeof formatMonitorResults>[0], slotLabel: string }} opts */
 export function buildMonitorMessage({ allOk, results, slotLabel }) {
   const headline = allOk
@@ -24,5 +32,7 @@ export function buildMonitorMessage({ allOk, results, slotLabel }) {
     ? `All monitored sites responded successfully.\n\nCheck time: ${slotLabel}\n\n`
     : `One or more sites failed the health check.\n\nCheck time: ${slotLabel}\n\n`;
 
-  return `${headline}\n\n${intro}${formatMonitorResults(results)}`;
+  const footer = `\n\nDashboard:\n${dashboardUrl()}/`;
+
+  return `${headline}\n\n${intro}${formatMonitorResults(results)}${footer}`;
 }
