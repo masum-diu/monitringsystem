@@ -19,7 +19,7 @@ Production URL: https://monitringsystem-inks.vercel.app
 
 ## Schedule
 
-**Every 3 hours** via GitHub Actions (`0 */3 * * *` UTC — 8× daily). Manual: `?force=1`.
+**Every 8 hours** via GitHub Actions (`0 */8 * * *` UTC — 3× daily). Manual: `?force=1`.
 
 ## Test production
 
@@ -63,10 +63,10 @@ curl -H "Authorization: Bearer YOUR_CRON_SECRET" "http://localhost:3000/api/cron
    | `GREEN_API_INSTANCE_ID` | `7105123456` |
    | `GREEN_API_TOKEN` | `abc123…` |
    | `WHATSAPP_GROUP_NAME` | `EtherTech` |
-   | `WHATSAPP_ALERT_ONLY` | `false` — **default:** প্রতি ৩ ঘণ্টায় WhatsApp (OK + alert) |
+   | `WHATSAPP_ALERT_ONLY` | `false` — **default:** প্রতি ৮ ঘণ্টায় WhatsApp (OK + alert) |
 
 **Default (`WHATSAPP_ALERT_ONLY` unset or `false`):**
-- প্রতি ৩ ঘণ্টায় site check + **WhatsApp message** EtherTech group-এ
+- প্রতি ৮ ঘণ্টায় site check + **WhatsApp message** EtherTech group-এ
 - সব OK হলে `[OK]` message, down হলে `[ALERT]` message
 
 **শুধু down হলে WhatsApp চাইলে:** Vercel-এ `WHATSAPP_ALERT_ONLY=true`

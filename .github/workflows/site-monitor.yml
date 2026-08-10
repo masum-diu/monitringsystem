@@ -1,11 +1,11 @@
-# Schedule: every 3 hours (UTC) — 8 checks/day
+# Schedule: every 8 hours (UTC) — 3 checks/day
 # Updates public/last-status.json on each run so the website shows last check time + results.
 
 name: Site monitor
 
 on:
   schedule:
-    - cron: '0 */3 * * *'
+    - cron: '0 */8 * * *'
   workflow_dispatch:
 
 env:

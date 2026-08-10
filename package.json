@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "check:local": "node scripts/check-local.mjs",
+    "status:update": "node scripts/update-status-json.mjs",
     "monitor:local": "node scripts/monitor-local.mjs",
     "email:hello": "node scripts/resend-hello.mjs",
     "email:demo": "node scripts/send-demo.mjs",

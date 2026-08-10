@@ -77,7 +77,7 @@ export default function Home({ lastStatus }) {
                   Site <span className={styles.heroTitleAccent}>Monitor</span>
                 </h1>
                 <p className={styles.heroDesc}>
-                  Checked every 3 hours. WhatsApp alerts to EtherTech group.
+                  Checked every 8 hours. WhatsApp alerts to EtherTech group.
                 </p>
               </div>
             </div>
@@ -106,15 +106,19 @@ export default function Home({ lastStatus }) {
                 </div>
 
                 <div className={styles.tile} style={{ gridColumn: '1 / -1' }}>
-                  <span className={styles.tileLabel}>Schedule · every 3 hours</span>
+                  <span className={styles.tileLabel}>Schedule · every 8 hours</span>
                   <div className={styles.scheduleStack}>
                     <div className={styles.slot}>
-                      <span>GitHub Actions (8× daily)</span>
-                      <span className={styles.slotTime}>3h</span>
+                      <span>GitHub Actions (3× daily)</span>
+                      <span className={styles.slotTime}>8h</span>
                     </div>
                     <div className={styles.slot}>
                       <span>WhatsApp (EtherTech)</span>
-                      <span className={styles.slotTime}>every 3h · OK + alert</span>
+                      <span className={styles.slotTime}>every 8h · OK + alert</span>
+                    </div>
+                    <div className={styles.slot}>
+                      <span>{tz} times (approx.)</span>
+                      <span className={styles.slotTime}>6a · 2p · 10p</span>
                     </div>
                   </div>
                 </div>

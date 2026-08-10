@@ -23,7 +23,7 @@ export function isWhatsAppConfigured() {
   return provider() != null;
 }
 
-/** Default false — WhatsApp on every scheduled check (every 3h). Set WHATSAPP_ALERT_ONLY=true for down-only. */
+/** Default false — WhatsApp on every scheduled check (every 8h). Set WHATSAPP_ALERT_ONLY=true for down-only. */
 export function isWhatsAppAlertOnly() {
   const v = process.env.WHATSAPP_ALERT_ONLY?.trim()?.toLowerCase();
   if (v === '1' || v === 'true' || v === 'yes') {
