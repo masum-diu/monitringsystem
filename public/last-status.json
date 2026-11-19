@@ -1,9 +1,9 @@
 {
   "ok": true,
   "allOk": true,
-  "checked": 13,
-  "checkedAt": "2026-08-10T10:05:38.611Z",
-  "checkedAtLabel": "Aug 10, 2026, 4:05 PM",
+  "checked": 14,
+  "checkedAt": "2026-11-19T08:38:19.266Z",
+  "checkedAtLabel": "Nov 19, 2026, 2:38 PM",
   "timezone": "Asia/Dhaka",
   "failed": [],
   "results": [
@@ -12,7 +12,7 @@
       "url": "https://www.sandhanilife.com/",
       "ok": true,
       "status": 200,
-      "ms": 381,
+      "ms": 589,
       "error": null,
       "protected": false
     },
@@ -21,7 +21,7 @@
       "url": "https://unitedaygaz.com/",
       "ok": true,
       "status": 200,
-      "ms": 223,
+      "ms": 866,
       "error": null,
       "protected": false
     },
@@ -30,7 +30,7 @@
       "url": "https://al-muslimgroup.com/",
       "ok": true,
       "status": 200,
-      "ms": 71,
+      "ms": 114,
       "error": null,
       "protected": false
     },
@@ -39,7 +39,7 @@
       "url": "https://raffinato.com.bd/",
       "ok": true,
       "status": 200,
-      "ms": 1592,
+      "ms": 3152,
       "error": null,
       "protected": false
     },
@@ -48,7 +48,7 @@
       "url": "https://polarexpressbd.com/",
       "ok": true,
       "status": 200,
-      "ms": 3599,
+      "ms": 4539,
       "error": null,
       "protected": false
     },
@@ -57,7 +57,7 @@
       "url": "https://masoutfits.com/",
       "ok": true,
       "status": 200,
-      "ms": 189,
+      "ms": 671,
       "error": null,
       "protected": false
     },
@@ -66,7 +66,7 @@
       "url": "https://sajidahospital.org/",
       "ok": true,
       "status": 200,
-      "ms": 301,
+      "ms": 619,
       "error": null,
       "protected": false
     },
@@ -75,7 +75,7 @@
       "url": "https://sunyouthnetworkbangladesh.org/",
       "ok": true,
       "status": 200,
-      "ms": 281,
+      "ms": 675,
       "error": null,
       "protected": false
     },
@@ -84,7 +84,7 @@
       "url": "https://barind.net/",
       "ok": true,
       "status": 200,
-      "ms": 193,
+      "ms": 623,
       "error": null,
       "protected": false
     },
@@ -93,7 +93,7 @@
       "url": "https://www.shokalshondha.com/",
       "ok": true,
       "status": 200,
-      "ms": 729,
+      "ms": 1382,
       "error": null,
       "protected": false
     },
@@ -102,7 +102,7 @@
       "url": "https://madkoffee.com/",
       "ok": true,
       "status": 200,
-      "ms": 430,
+      "ms": 1023,
       "error": null,
       "protected": false
     },
@@ -111,7 +111,7 @@
       "url": "https://alokitoteachers.com/",
       "ok": true,
       "status": 200,
-      "ms": 104,
+      "ms": 813,
       "error": null,
       "protected": false
     },
@@ -120,7 +120,16 @@
       "url": "https://www.madeinbangladeshweek.com/",
       "ok": true,
       "status": 200,
-      "ms": 190,
+      "ms": 759,
+      "error": null,
+      "protected": false
+    },
+    {
+      "name": "Webable Digital",
+      "url": "https://webable.digital/",
+      "ok": true,
+      "status": 200,
+      "ms": 1316,
       "error": null,
       "protected": false
     }
